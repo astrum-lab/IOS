@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "AstroCoin",
+    "slug": "AstroCoin",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photoPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.astrocoin.astrum"
+    },
+    "android": {
+      "package": "com.astrocoin.astrum"
+    }
+  },
+  "name": "AstroCoin"
+}
