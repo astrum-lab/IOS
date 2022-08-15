@@ -1,1 +1,1 @@
-# AstroCoin_IOS
+# IOS
