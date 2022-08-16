@@ -55,14 +55,7 @@ const Footer = () => {
 
   return (
     <View
-      style={[
-        tw`absolute flex flex-row w-11/12 justify-around h-12 items-center rounded-2xl`,
-        {
-          left: "4%",
-          bottom: 20,
-          backgroundColor: "white",
-        },
-      ]}
+      style={tw`absolute flex flex-row justify-around items-center h-20 w-full bottom-0 bg-white`}
     >
       <TouchableOpacity
         onPress={() => {

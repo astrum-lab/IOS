@@ -9,7 +9,7 @@ import {
 import React, { useState, useEffect, useRef } from "react";
 import Footer from "../Components/Footer";
 import tw from "twrnc";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as Linking from "expo-linking";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-root-toast";
@@ -18,8 +18,8 @@ import { Modalize } from "react-native-modalize";
 import api from "../api";
 
 const Settings = () => {
-  const [imgSuccess, setImgSuccess] = useState("");
   const state = useSelector((state: any) => state);
+  const dispatch = useDispatch();
   const { user, token } = state.reducer;
 
   const ref = useRef<Modalize>(null);
@@ -61,6 +61,10 @@ const Settings = () => {
     });
 
     console.log("response: \n" + JSON.stringify(response));
+
+    if(response.status === 200) {
+      dispatch({type: "SET_USER", payload: {...user, photo: image}});
+    }
 
   }
 

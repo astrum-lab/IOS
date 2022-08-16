@@ -216,7 +216,7 @@ const Users = () => {
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
-        style={tw`w-11/12 h-4/5 flex-grow-0 p-2`}
+        style={tw`w-11/12 h-5/6 flex-grow-0 p-2 mt-2`}
       />
       <Footer />
       <Modalize

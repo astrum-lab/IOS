@@ -69,6 +69,7 @@ const Router = () => {
                 name="Main"
                 component={Home}
                 options={{
+                  gestureEnabled: false,
                   headerTitle: (props) => <Header {...props} />,
                   headerStyle: {
                     backgroundColor: "#f1f1f1",

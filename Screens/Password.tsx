@@ -105,6 +105,12 @@ const Password = () => {
   useEffect(() => {
     if (isUser) {
       setPasswordStatus("Enter Password");
+    } 
+  }, [isUser]);
+
+  useEffect(() => {
+    if (isUser) {
+      setPasswordStatus("Enter Password");
       if (pass.length === 4 && pass === password) {
         navigation.navigate("Main" as never);
       } else if (pass.length === 4 && pass !== password) {
