@@ -9,8 +9,6 @@ import {
 import {useEffect} from 'react';
 import React from 'react';
 import {useTheme} from '../ThemeContext';
-import useStore from '../store/index';
-import {Text} from './Components/Responsive';
 
 import Header from './Components/Header';
 import Card from './Components/Card';

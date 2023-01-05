@@ -31,15 +31,20 @@ const Password = () => {
   const numBtns = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   useEffect(() => {
-    getUser().then(user => {
-      if (user === null) {
+
+
+    const GetUser = async () => {
+      try {
+        const res = await getUser();
+        setName(res.name);
+        setUser(res);
+      } catch (err) {
+        console.log(err);
         navigation.navigate('App');
       }
-      setName(user.name);
-      setUser(user);
-    });
+    };
+    GetUser();
 
-    console.log('theme: ', themeType);
     Read('password').then(old => {
       if (!old) {
         setPasswordStatus('Create password');

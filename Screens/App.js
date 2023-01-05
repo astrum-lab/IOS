@@ -37,7 +37,6 @@ const App = () => {
   const handleLogin = async () => {
     try {
       if (email === '' || password === '') {
-        console.log('error');
         Vibration.vibrate(100);
       } else {
         const response = await login(email, password);
@@ -96,7 +95,7 @@ const App = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      width: 360,
+      width: 320,
       height: 40,
       marginTop: 24,
       paddingLeft: 16,

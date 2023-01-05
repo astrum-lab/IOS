@@ -36,4 +36,12 @@ const Delete = async key => {
   }
 };
 
-export {Create, Read, Update, Delete};
+const Clean = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {Create, Read, Update, Delete, Clean};

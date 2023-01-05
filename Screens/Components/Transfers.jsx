@@ -20,6 +20,7 @@ const Transfers = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [noTransfers, setNoTransfers] = useState(false);
 
   const {width} = useWindowDimensions();
 
@@ -37,13 +38,18 @@ const Transfers = () => {
     let parsedTransfers = [];
     const transfers = await getTransfers(page);
 
-    if (transfers.length === 0) {
+    if (transfers.length === 0 && page > 1) {
       setTimeout(() => {
         setLoading(false);
       }, 500);
+      console.log('no more transfers');
 
       setPage(page - 1);
 
+      return;
+    } else if (transfers.length === 0 && page === 1) {
+      setNoTransfers(true);
+      setLoading(false);
       return;
     }
 
@@ -60,7 +66,10 @@ const Transfers = () => {
         data: value,
       });
     }
-    setData(data => [...data, ...parsedTransfers]);
+
+    let DATA = [...data, ...parsedTransfers];
+
+    setData(DATA);
 
     return setLoading(false);
   };
@@ -197,27 +206,33 @@ const Transfers = () => {
 
   return (
     <View style={styles.container}>
-      <SectionList
-        contentContainerStyle={styles.sectionList}
-        sections={data}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => <Item item={item} />}
-        renderSectionHeader={({section: {title}}) => <Title title={title} />}
-        stickySectionHeadersEnabled={false}
-        onEndReached={() => {
-          infinityScroll();
-        }}
-        ListFooterComponent={
-          loading ? (
-            <ActivityIndicator
-              size="large"
-              color={theme.colors.primary}
-              style={{marginVertical: 10}}
-            />
-          ) : null
-        }
-        ref={sectionListRef}
-      />
+      {!noTransfers ? (
+        <SectionList
+          contentContainerStyle={styles.sectionList}
+          sections={data}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({item}) => <Item item={item} />}
+          renderSectionHeader={({section: {title}}) => <Title title={title} />}
+          stickySectionHeadersEnabled={false}
+          onEndReached={() => {
+            infinityScroll();
+          }}
+          ListFooterComponent={
+            loading ? (
+              <ActivityIndicator
+                size="large"
+                color={theme.colors.primary}
+                style={{marginVertical: 10}}
+              />
+            ) : null
+          }
+          ref={sectionListRef}
+        />
+      ) : (
+        <>
+          <Text>No transfers yet</Text>
+        </>
+      )}
     </View>
   );
 };

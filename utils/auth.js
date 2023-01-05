@@ -1,5 +1,5 @@
 import api from './api';
-import {Read, Create} from './storage/crud';
+import {Read, Clean} from './storage/crud';
 
 // @route POST api/login
 // @desc Login user
@@ -20,15 +20,17 @@ export const register = async (name, email, password) => {};
 
 export const getUser = async () => {
   let user;
-  await Read('token').then(async token => {
-    const res = await api.get('/user', {
+  try {
+    const token = await Read('token');
+    user = await api.get('/user', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    user = res.data;
-    Create('user', JSON.stringify(res.data));
-  });
+  } catch (err) {
+    console.log(err);
+    Clean();
+  }
 
-  return user;
+  return user.data;
 };
