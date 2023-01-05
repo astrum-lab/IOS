@@ -11,6 +11,8 @@ import React, {useEffect, useState, useRef} from 'react';
 import {getTransfers} from '../../utils/transaction';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme} from '../../ThemeContext';
+import {useNavigation} from '@react-navigation/native';
+import {Clean} from '../../utils/storage/crud';
 
 const Transfers = () => {
   const sectionListRef = useRef(null);
@@ -24,6 +26,8 @@ const Transfers = () => {
 
   const {width} = useWindowDimensions();
 
+  const navigation = useNavigation();
+
   const lastIndex = () => {
     let resLength = 0;
     for (let i = 0; i < data.length; i++) {
@@ -36,7 +40,16 @@ const Transfers = () => {
     setLoading(true);
 
     let parsedTransfers = [];
-    const transfers = await getTransfers(page);
+    let transfers = [];
+
+    try {
+      transfers = await getTransfers(page);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong');
+      navigation.navigate('App');
+      Clean();
+    }
 
     if (transfers.length === 0 && page > 1) {
       setTimeout(() => {
@@ -68,6 +81,14 @@ const Transfers = () => {
     }
 
     let DATA = [...data, ...parsedTransfers];
+
+    for (let i = 0; i < DATA.length; i++) {
+      for (let j = 0; j < DATA.length; j++) {
+        if (i !== j && DATA[i].title === DATA[j].title) {
+          DATA.splice(j, 1);
+        }
+      }
+    }
 
     setData(DATA);
 

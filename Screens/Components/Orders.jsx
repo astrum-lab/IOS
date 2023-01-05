@@ -11,6 +11,8 @@ import React, {useEffect, useState, useRef} from 'react';
 import {getOrders} from '../../utils/transaction';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme} from '../../ThemeContext';
+import {useNavigation} from '@react-navigation/native';
+import {Clean} from '../../utils/storage/crud';
 
 const Orders = () => {
   const sectionListRef = useRef(null);
@@ -20,8 +22,11 @@ const Orders = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [noOrders, setNoOrders] = useState(false);
 
   const {width} = useWindowDimensions();
+
+  const navigation = useNavigation();
 
   const lastIndex = () => {
     let resLength = 0;
@@ -34,16 +39,30 @@ const Orders = () => {
   const fetchData = async () => {
     setLoading(true);
 
-    let parsedOrders = [];
-    const orders = await getOrders(page);
+    let parsedOreders = [];
+    let orders = [];
 
-    if (orders.length === 0) {
+    try {
+      orders = await getOrders(page);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong');
+      navigation.navigate('App');
+      Clean();
+    }
+
+    if (orders.length === 0 && page > 1) {
       setTimeout(() => {
         setLoading(false);
       }, 500);
+      console.log('no more orders');
 
       setPage(page - 1);
 
+      return;
+    } else if (orders.length === 0 && page === 1) {
+      setNoOrders(true);
+      setLoading(false);
       return;
     }
 
@@ -55,12 +74,23 @@ const Orders = () => {
         value[0].borderTop = true;
         value[0].borderBottom = true;
       }
-      parsedOrders.push({
+      parsedOreders.push({
         title: key,
         data: value,
       });
     }
-    setData(data => [...data, ...parsedOrders]);
+
+    let DATA = [...data, ...parsedOreders];
+
+    for (let i = 0; i < DATA.length; i++) {
+      for (let j = 0; j < DATA.length; j++) {
+        if (i !== j && DATA[i].title === DATA[j].title) {
+          DATA.splice(j, 1);
+        }
+      }
+    }
+
+    setData(DATA);
 
     return setLoading(false);
   };
@@ -197,27 +227,33 @@ const Orders = () => {
 
   return (
     <View style={styles.container}>
-      <SectionList
-        contentContainerStyle={styles.sectionList}
-        sections={data}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => <Item item={item} />}
-        renderSectionHeader={({section: {title}}) => <Title title={title} />}
-        stickySectionHeadersEnabled={false}
-        onEndReached={() => {
-          infinityScroll();
-        }}
-        ListFooterComponent={
-          loading ? (
-            <ActivityIndicator
-              size="large"
-              color={theme.colors.primary}
-              style={{marginVertical: 10}}
-            />
-          ) : null
-        }
-        ref={sectionListRef}
-      />
+      {!noOrders ? (
+        <SectionList
+          contentContainerStyle={styles.sectionList}
+          sections={data}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({item}) => <Item item={item} />}
+          renderSectionHeader={({section: {title}}) => <Title title={title} />}
+          stickySectionHeadersEnabled={false}
+          onEndReached={() => {
+            infinityScroll();
+          }}
+          ListFooterComponent={
+            loading ? (
+              <ActivityIndicator
+                size="large"
+                color={theme.colors.primary}
+                style={{marginVertical: 10}}
+              />
+            ) : null
+          }
+          ref={sectionListRef}
+        />
+      ) : (
+        <>
+          <Text>No orders yet</Text>
+        </>
+      )}
     </View>
   );
 };
