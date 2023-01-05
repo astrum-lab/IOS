@@ -2,13 +2,15 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
-  Dimensions,
   Image,
   TouchableOpacity,
+  useWindowDimensions,
+  Text,
 } from 'react-native';
-import {useEffect} from 'react';
-import React from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import {useTheme} from '../ThemeContext';
+import BottomSheet from '@gorhom/bottom-sheet';
+import 'react-native-gesture-handler';
 
 import Header from './Components/Header';
 import Card from './Components/Card';
@@ -18,7 +20,19 @@ import Footer from './Components/Footer';
 const Main = () => {
   const {theme, themeType} = useTheme();
 
-  useEffect(() => {}, []);
+  const {width, height} = useWindowDimensions();
+
+  const bottomSheetRef = useRef(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['70%'], []);
+
+  const handleSnapPress = () => {
+    bottomSheetRef.current?.snapToIndex(0);
+  };
+  const handleSnapClose = () => {
+    bottomSheetRef.current?.close();
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -27,33 +41,13 @@ const Main = () => {
       alignItems: 'center',
       backgroundColor: theme.colors.backgroundSecondary,
     },
-    card: {
-      width: (Dimensions.get('window').width / 100) * 90,
-      height: 200,
-      borderRadius: 15,
-      resizeMode: 'contain',
-      position: 'absolute',
-    },
-    cardholder: {
-      position: 'relative',
-      height: 200,
-      width: (Dimensions.get('window').width / 100) * 90,
-      borderRadius: 15,
-    },
-    balanceText: {
-      fontFamily: 'Fredoka-Light',
-      fontSize: 20,
-      color: 'white',
-      marginTop: 20,
-      marginLeft: 20,
-    },
     transactionButtons: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: (Dimensions.get('window').width / 100) * 90,
-      marginTop: 20,
+      width: (width / 100) * 90,
+      marginTop: height === 667 ? -20 : 20,
     },
     transactionButton: {
       backgroundColor: theme.colors.button,
@@ -75,7 +69,9 @@ const Main = () => {
       <Header />
       <Card />
       <View style={styles.transactionButtons}>
-        <TouchableOpacity style={styles.transactionButton}>
+        <TouchableOpacity
+          style={styles.transactionButton}
+          onPress={handleSnapPress}>
           <Image
             source={
               themeType === 'light'
@@ -108,6 +104,12 @@ const Main = () => {
       </View>
       <TopTab />
       <Footer />
+
+      <BottomSheet ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
+        <View style={styles.contentContainer}>
+          <Text>Awesome 🎉</Text>
+        </View>
+      </BottomSheet>
     </SafeAreaView>
   );
 };

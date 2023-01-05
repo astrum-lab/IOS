@@ -51,7 +51,7 @@ const TopTab = () => {
             {...props}
             indicatorStyle={{
               backgroundColor: theme.colors.button,
-              height: 40,
+              height: height === 667 ? 30 : 40,
               marginBottom: 5,
               width: '45%',
               marginLeft: '2%',
@@ -60,7 +60,8 @@ const TopTab = () => {
             style={{
               backgroundColor: theme.colors.swiperBackground,
               borderRadius: 15,
-              height: 50,
+              height: height === 667 ? 40 : 50,
+              display: 'flex',
             }}
             renderLabel={({route, focused, color}) => (
               <Text
@@ -71,7 +72,8 @@ const TopTab = () => {
                       : '#ffffff'
                     : '#A8A8A8',
                   fontFamily: 'Fredoka-Medium',
-                  fontSize: 16,
+                  fontSize: height === 667 ? 14 : 16,
+                  marginBottom: height === 667 ? 10 : 0,
                 }}>
                 {route.title}
               </Text>

@@ -1,11 +1,10 @@
 import {View, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import React from 'react';
-import {Text} from './Responsive';
 import CardBackground from '../../assets/card-background.png';
 import Coin from '../../assets/coin-half.png';
 
 const Card = () => {
-  const {width} = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
 
   const styles = StyleSheet.create({
     container: {
@@ -15,12 +14,12 @@ const Card = () => {
     },
     img: {
       width: (width / 100) * 90,
-      height: width * 0.45,
+      height: (height / 100) * 21,
       borderRadius: 15,
     },
     coin: {
       width: 90,
-      height: width * 0.45 - 1,
+      height: (height / 100) * 21 - 10,
       zIndex: 1,
       borderTopRightRadius: 15,
       position: 'absolute',
