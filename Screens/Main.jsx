@@ -5,17 +5,17 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
-  Text,
 } from 'react-native';
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {useTheme} from '../ThemeContext';
 import BottomSheet from '@gorhom/bottom-sheet';
-import 'react-native-gesture-handler';
+import QRCode from 'react-native-qrcode-svg';
 
 import Header from './Components/Header';
 import Card from './Components/Card';
 import TopTab from './Components/TopTab';
 import Footer from './Components/Footer';
+import {Read} from '../utils/storage';
 
 const Main = () => {
   const {theme, themeType} = useTheme();
@@ -24,14 +24,10 @@ const Main = () => {
 
   const bottomSheetRef = useRef(null);
 
-  // variables
   const snapPoints = useMemo(() => ['70%'], []);
 
   const handleSnapPress = () => {
     bottomSheetRef.current?.snapToIndex(0);
-  };
-  const handleSnapClose = () => {
-    bottomSheetRef.current?.close();
   };
 
   const styles = StyleSheet.create({
@@ -61,6 +57,18 @@ const Main = () => {
     btnImg: {
       width: 30,
       height: 30,
+    },
+    bottomSheetContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1,
+    },
+    darkView: {
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      width: width,
+      height: height,
+      zIndex: 1,
     },
   });
 
@@ -104,10 +112,12 @@ const Main = () => {
       </View>
       <TopTab />
       <Footer />
-
-      <BottomSheet ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        enablePanDownToClose>
         <View style={styles.contentContainer}>
-          <Text>Awesome 🎉</Text>
+          <QRCode />
         </View>
       </BottomSheet>
     </SafeAreaView>
