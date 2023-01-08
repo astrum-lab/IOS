@@ -31,4 +31,23 @@ const getTransfers = async page => {
   }
 };
 
-export {getOrders, getTransfers};
+// get user by wallet address
+const getUserByWallet = async wallet => {
+  try {
+    const token = await Read('token');
+    const response = await api.post(
+      '/wallet',
+      {address: wallet},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {getOrders, getTransfers, getUserByWallet};
