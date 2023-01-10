@@ -23,18 +23,22 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Copy from '../assets/copy.png';
 import ShareIcon from '../assets/share-icon.png';
 import PasteIcon from '../assets/paste-icon.png';
+import SendIcon from '../assets/send-coin.png';
 
 const Main = () => {
   const {theme, themeType} = useTheme();
   const [user, setUser] = useState();
   const [wallet, setWallet] = useState('');
   const [walletUser, setWalletUser] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [comment, setComment] = useState('');
+
   const {width, height} = useWindowDimensions();
 
   const bottomSheetRef = useRef(null);
   const bottomSheetSendRef = useRef(null);
 
-  const snapPoints = useMemo(() => ['70%'], []);
+  const snapPoints = useMemo(() => ['75%'], []);
 
   const handleCopyWallet = () => {
     Clipboard.setString(user?.wallet);
@@ -86,7 +90,6 @@ const Main = () => {
       display: 'flex',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      zIndex: 1,
       height: '100%',
       backgroundColor: theme.colors.backgroundSecondary,
     },
@@ -97,16 +100,16 @@ const Main = () => {
     },
     qrCodeBg: {
       backgroundColor: theme.colors.background,
-      width: 300,
-      height: 300,
+      width: (width / 100) * 90,
+      height: (width / 100) * 90,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 20,
-      marginTop: 40,
+      marginTop: 10,
     },
     input: {
-      width: (width / 100) * 75,
+      width: (width / 100) * 90,
       height: 40,
       backgroundColor: theme.colors.background,
       borderRadius: 10,
@@ -127,7 +130,7 @@ const Main = () => {
     },
     shareBtn: {
       backgroundColor: theme.colors.primary,
-      width: (width / 100) * 75,
+      width: (width / 100) * 90,
       height: 40,
       borderRadius: 10,
       marginTop: 20,
@@ -143,23 +146,16 @@ const Main = () => {
       marginRight: 10,
     },
     textInput: {
-      width: (width / 100) * 90,
+      width: (width / 100) * 85,
       height: 40,
       backgroundColor: theme.colors.input,
       borderRadius: 10,
-      marginTop: 10,
       paddingLeft: 10,
       paddingRight: 30,
       fontFamily: 'Fredoka-Light',
+      marginVertical: 10,
     },
-    inputView: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'row',
-      height: 40,
-      marginBottom: 30,
-    },
+
     walletUserView: {
       display: 'flex',
       justifyContent: 'flex-start',
@@ -172,9 +168,38 @@ const Main = () => {
       fontFamily: 'Fredoka-Medium',
       fontSize: 25,
       color: theme.colors.text,
-      marginTop: 20,
+      marginVertical: 10,
+    },
+    darkView: {
+      backgroundColor: '#3737376d',
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      zIndex: 1,
+      top: 0,
+    },
+    inputView: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      flexDirection: 'row',
+      height: 40,
+      width: (width / 100) * 90,
+      backgroundColor: theme.colors.input,
+      borderRadius: 10,
+      paddingRight: 15,
+    },
+    userName: {
+      fontFamily: 'Fredoka-Light',
+      width: (width / 100) * 90,
+      marginVertical: 10,
     },
   });
+
+  const pasteUserWallet = async () => {
+    const text = await Clipboard.getString();
+    setWallet(text);
+  };
 
   useEffect(() => {
     const GetUser = async () => {
@@ -197,7 +222,11 @@ const Main = () => {
         console.log(error);
       }
     };
-    GetUserByWallet();
+    if (wallet?.length > 9) {
+      GetUserByWallet();
+    } else if (wallet?.length < 9) {
+      setWalletUser('');
+    }
   }, [wallet]);
 
   return (
@@ -245,24 +274,19 @@ const Main = () => {
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={snapPoints}
-        enablePanDownToClose
+        enablePanDownToClose={true}
+        containerStyle={{
+          zIndex: 2,
+        }}
         index={-1}
         style={{
           backgroundColor: theme.colors.backgroundSecondary,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowOpacity: 0.58,
-          shadowRadius: 16.0,
-
-          elevation: 24,
+          borderRadius: 20,
         }}
         handleStyle={{
           backgroundColor: theme.colors.backgroundSecondary,
-          borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
         }}>
         <View style={styles.bottomSheetContainer}>
           <Text style={styles.textRecieve}>Recieve</Text>
@@ -298,12 +322,65 @@ const Main = () => {
         index={-1}
         style={{
           backgroundColor: theme.colors.backgroundSecondary,
+          borderRadius: 20,
         }}
         handleStyle={{
           backgroundColor: theme.colors.backgroundSecondary,
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
         }}>
         <View style={styles.bottomSheetContainer}>
           <Text style={styles.send}>Send</Text>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Wallet"
+              placeholderTextColor={theme.colors.inputText}
+              value={wallet}
+              onChangeText={setWallet}
+            />
+            <TouchableOpacity onPress={pasteUserWallet}>
+              <Image
+                source={PasteIcon}
+                style={styles.copyImg}
+                onPress={handlePasteWallet}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.userName}>{walletUser}</Text>
+          <TextInput
+            style={[
+              styles.textInput,
+              {
+                width: (width / 100) * 90,
+              },
+            ]}
+            keyboardType="number-pad"
+            placeholderTextColor={theme.colors.inputText}
+            placeholder="12 132 ASC"
+            value={amount}
+            onChangeText={setAmount}
+          />
+          <TextInput
+            multiline={true}
+            style={[
+              styles.textInput,
+              {
+                height: 200,
+                width: (width / 100) * 90,
+              },
+            ]}
+            placeholder="Comment"
+            placeholderTextColor={theme.colors.inputText}
+            textAlignVertical="top"
+            value={comment}
+            onChangeText={setComment}
+          />
+
+          <TouchableOpacity style={styles.shareBtn} onPress={() => {}}>
+            <Text style={styles.shareText}>Send</Text>
+            <Image source={SendIcon} style={styles.copyImg} />
+          </TouchableOpacity>
         </View>
       </BottomSheet>
     </SafeAreaView>

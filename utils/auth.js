@@ -22,6 +22,7 @@ export const getUser = async () => {
   let user;
   try {
     const token = await Read('token');
+    console.log(token);
     user = await api.get('/user', {
       headers: {
         Authorization: `Bearer ${token}`,
