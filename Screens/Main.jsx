@@ -23,7 +23,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Copy from '../assets/copy.png';
 import ShareIcon from '../assets/share-icon.png';
 import PasteIcon from '../assets/paste-icon.png';
-import {Read} from '../utils/storage/crud';
 
 const Main = () => {
   const {theme, themeType} = useTheme();
@@ -250,9 +249,20 @@ const Main = () => {
         index={-1}
         style={{
           backgroundColor: theme.colors.backgroundSecondary,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 12,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: 16.0,
+
+          elevation: 24,
         }}
         handleStyle={{
           backgroundColor: theme.colors.backgroundSecondary,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
         }}>
         <View style={styles.bottomSheetContainer}>
           <Text style={styles.textRecieve}>Recieve</Text>
@@ -294,40 +304,6 @@ const Main = () => {
         }}>
         <View style={styles.bottomSheetContainer}>
           <Text style={styles.send}>Send</Text>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.textInput}
-              value={wallet}
-              onChangeText={setWallet}
-              placeholder="Wallet Adress"
-            />
-            <TouchableOpacity
-              style={{
-                marginBottom: -40,
-                marginLeft: -30,
-              }}
-              onPress={handlePasteWallet}>
-              <Image source={PasteIcon} style={styles.copyImg} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.walletUserView}>
-            <Text
-              style={{
-                fontFamily: 'Fredoka-Light',
-                color: theme.colors.text,
-              }}>
-              {walletUser}
-            </Text>
-          </View>
-          <TextInput
-            style={styles.textInput}
-            value={wallet => {
-              return wallet.toLocaleString('fi-FI');
-            }}
-            onChangeText={setWallet}
-            placeholder="12 312 ASC"
-            keyboardType="number-pad"
-          />
         </View>
       </BottomSheet>
     </SafeAreaView>

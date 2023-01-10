@@ -47,6 +47,7 @@ const colors = {
   swiperBackground: '#dddddd',
   border: '#eaeaea',
   backgroundSecondary: '#EAEAEA',
+  bottomSheetBorder: '#000000',
 };
 
 const darkColors = {
@@ -64,6 +65,7 @@ const darkColors = {
   swiperBackground: '#302c3e',
   border: '#363246',
   backgroundSecondary: '#211E2A',
+  bottomSheetBorder: '#ffffff',
 };
 
 const breakpoints = {
