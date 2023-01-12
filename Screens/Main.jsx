@@ -14,7 +14,7 @@ import {useTheme} from '../ThemeContext';
 import BottomSheet from '@gorhom/bottom-sheet';
 import QRCode from 'react-native-qrcode-svg';
 import {getUser} from '../utils/auth';
-import {getUserByWallet} from '../utils/transaction';
+import {getUserByWallet, postTransfer} from '../utils/transaction';
 import Header from './Components/Header';
 import Card from './Components/Card';
 import TopTab from './Components/TopTab';
@@ -24,6 +24,7 @@ import Copy from '../assets/copy.png';
 import ShareIcon from '../assets/share-icon.png';
 import PasteIcon from '../assets/paste-icon.png';
 import SendIcon from '../assets/send-coin.png';
+import {Read} from '../utils/storage/crud';
 
 const Main = () => {
   const {theme, themeType} = useTheme();
@@ -56,6 +57,15 @@ const Main = () => {
 
   const handleSnapSendPress = () => {
     bottomSheetSendRef.current?.snapToIndex(0);
+  };
+
+  const handleTransfer = async () => {
+    if (wallet === '' || amount === 0) {
+      alert('Please fill all fields');
+      return;
+    } else {
+      await postTransfer(wallet, amount, comment);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -203,6 +213,8 @@ const Main = () => {
 
   useEffect(() => {
     const GetUser = async () => {
+      const token = await Read('token');
+      console.log(token);
       try {
         const user = await getUser();
         setUser(user);
@@ -377,7 +389,7 @@ const Main = () => {
             onChangeText={setComment}
           />
 
-          <TouchableOpacity style={styles.shareBtn} onPress={() => {}}>
+          <TouchableOpacity style={styles.shareBtn} onPress={handleTransfer}>
             <Text style={styles.shareText}>Send</Text>
             <Image source={SendIcon} style={styles.copyImg} />
           </TouchableOpacity>

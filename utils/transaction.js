@@ -50,4 +50,30 @@ const getUserByWallet = async wallet => {
   }
 };
 
-export {getOrders, getTransfers, getUserByWallet};
+// transfer astrocoins
+const postTransfer = async (wallet, astrocoin, message) => {
+  try {
+    const token = await Read('token');
+    const response = await api.post(
+      '/wallet/transfer',
+      {
+        wallet_to: wallet,
+        amount: astrocoin,
+        comment: message,
+        type: '',
+        title: '',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
+
+export {getOrders, getTransfers, getUserByWallet, postTransfer};
