@@ -22,6 +22,7 @@
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-camera": "^4.2.1",
+    "react-native-camera-kit": "^13.0.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-pager-view": "^6.1.2",
     "react-native-paper": "^5.0.1",

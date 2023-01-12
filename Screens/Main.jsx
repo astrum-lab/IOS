@@ -13,6 +13,7 @@ import React, {useMemo, useRef, useEffect, useState} from 'react';
 import {useTheme} from '../ThemeContext';
 import BottomSheet from '@gorhom/bottom-sheet';
 import QRCode from 'react-native-qrcode-svg';
+import {CameraScreen} from 'react-native-camera-kit';
 import {getUser} from '../utils/auth';
 import {getUserByWallet, postTransfer} from '../utils/transaction';
 import Header from './Components/Header';
@@ -388,13 +389,16 @@ const Main = () => {
             value={comment}
             onChangeText={setComment}
           />
-
           <TouchableOpacity style={styles.shareBtn} onPress={handleTransfer}>
             <Text style={styles.shareText}>Send</Text>
             <Image source={SendIcon} style={styles.copyImg} />
           </TouchableOpacity>
         </View>
       </BottomSheet>
+      <CameraScreen
+        actions={{rightButtonText: 'Done', leftButtonText: 'Cancel'}}
+        scanBarcode={true}
+      />
     </SafeAreaView>
   );
 };
